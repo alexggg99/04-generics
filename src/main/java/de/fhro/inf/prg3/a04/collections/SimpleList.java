@@ -1,10 +1,12 @@
 package de.fhro.inf.prg3.a04.collections;
 
-public interface SimpleList extends Iterable {
+import java.util.function.Function;
+
+public interface SimpleList<T> extends Iterable<T> {
 	/**
 	 * Add a given object to the back of the list.
 	 */
-	void add(Object o);
+	void add(T o);
 
 	/**
 	 * @return current size of the list
@@ -12,8 +14,26 @@ public interface SimpleList extends Iterable {
 	int size();
 
 	/**
-	 * Generate a new list using the given filter instance.
-	 * @return a new, filtered list
+	 * Get a new SimpleList instance with all items of this list which match the given filter
+	 * @param filter SimpleFilter instance
+	 * @return new SimpleList instance
 	 */
-	SimpleList filter(SimpleFilter filter);
+	default SimpleList<T> filter(SimpleFilter filter) {
+		SimpleList<T> result = new SimpleListImpl<>();
+		for(T o : this){
+			if(filter.include(o)){
+				result.add(o);
+			}
+		}
+		return result;
+	};
+
+	default <R> SimpleList<R> map(Function<T, R> transform) {
+		SimpleList<R> result = new SimpleListImpl<>();
+		for(T o : this) {
+			result.add(transform.apply(o));
+		}
+		return result;
+	}
+
 }

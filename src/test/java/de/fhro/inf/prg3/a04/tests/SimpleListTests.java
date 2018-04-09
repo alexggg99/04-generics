@@ -8,6 +8,8 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.stream.Stream;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -18,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class SimpleListTests {
 
 	private final Logger logger = LogManager.getLogger();
-	private SimpleList testList;
+	private SimpleList<Integer> testList;
 
 	@BeforeEach
 	void setup(){
@@ -35,7 +37,7 @@ public class SimpleListTests {
 	void testAddElements(){
 		logger.info("Testing if adding and iterating elements is implemented correctly");
 		int counter = 0;
-		for(Object o : testList){
+		for(Integer o : testList){
 			counter++;
 		}
 		assertEquals(5, counter);
@@ -50,7 +52,7 @@ public class SimpleListTests {
 	@Test
 	void testFilterAnonymousClass(){
 		logger.info("Testing the filter possibilities by filtering for all elements greater 2");
-		SimpleList result = testList.filter(new SimpleFilter() {
+		SimpleList<Integer> result = testList.filter(new SimpleFilter() {
 			@Override
 			public boolean include(Object item) {
 				int current = (int)item;
@@ -58,8 +60,8 @@ public class SimpleListTests {
 			}
 		});
 
-		for(Object o : result){
-			int i = (int)o;
+		for(Integer o : result){
+			int i = o;
 			assertTrue(i > 2);
 		}
 	}
@@ -67,10 +69,19 @@ public class SimpleListTests {
 	@Test
 	void testFilterLambda(){
 		logger.info("Testing the filter possibilities by filtering for all elements which are dividable by 2");
-		SimpleList result = testList.filter(o -> ((int) o) % 2 == 0);
-		for(Object o : result){
+		SimpleList<Integer> result = testList.filter(o -> ((int) o) % 2 == 0);
+		for(Integer o : result){
 			int i = (int)o;
 			assertTrue(i % 2 == 0);
 		}
 	}
+
+	@Test
+	void testMapFunction() {
+		SimpleList<String> result = testList.map(item -> "test_" + item);
+		for (String str : result) {
+			System.out.println(str);
+		}
+	}
+
 }
